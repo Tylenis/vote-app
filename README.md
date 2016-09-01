@@ -7,4 +7,4 @@ Voting App project  for the [Free Code Camp](http://www.freecodecamp.com)  curri
 
 ## Demo
 
-Coming soon
+https://voteapp-tylenisfcc.rhcloud.com/
