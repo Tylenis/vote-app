@@ -1,0 +1,42 @@
+<div class="well login-signup-form">
+    <div uib-alert ng-class="'alert-success text-center'" close="closeAlert('loginerror')"
+    dismiss-on-timeout="10000"  ng-show="maindata.signupsuccess">
+        <strong>{{maindata.signupsuccess}}</strong>
+    </div>
+    <div uib-alert ng-class="'alert-danger text-center'" close="closeAlert('loginerror')" ng-show="maindata.loginerror">
+        <strong>{{maindata.loginerror}}</strong>
+    </div>
+    <div uib-alert ng-class="'alert-danger text-center'" 
+    ng-show="form.username.$invalid&&form.username.$touched">
+        <strong>Username is required!</strong>
+    </div>
+    <div uib-alert ng-class="'alert-danger text-center'" 
+    ng-show="form.password.$invalid&&form.password.$touched">
+        <strong>Password is required!</strong>
+    </div>
+    <form class="form-horizontal" novalidate name="form">
+        <fieldset>
+            <legend class="text-center">Log in</legend>
+            <div class="form-group" ng-class="{'has-success': form.username.$valid}">
+                <label for="inputUsername" class="col-lg-2 control-label">Username</label>
+                <div class="col-lg-10">
+                    <input class="form-control" id="inputUsername" placeholder="Username"
+                    type="text" ng-model="username" required name="username" ng-minlength="4">
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-success': form.password.$valid}">
+                <label for="inputPassword" class="col-lg-2 control-label">Password</label>
+                <div class="col-lg-10">
+                    <input class="form-control" id="inputPassword" placeholder="Password"
+                    type="password"  ng-model="password" required name="password" ng-minlength="6">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                    <button type="reset" class="btn btn-default">Cancel</button>
+                    <button  class="btn btn-primary" ng-class="{'disabled': form.$invalid}" ng-click="login()">Submit</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>

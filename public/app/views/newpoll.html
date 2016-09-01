@@ -1,0 +1,52 @@
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h1 class="text-center" id="tooLong">NEW POLL</h1>
+        <a href="#logged" class="back-button">
+            <i class="fa fa-arrow-circle-left fa-3x" aria-hidden="true"
+            uib-popover="Back" popover-placement="right" popover-trigger="'mouseenter'"></i>
+        </a>
+    </div>
+    <div class="panel-body">
+        <div class="poll-create-form vote-animate" ng-if="successfullycreated==false">
+            <form class="form-horizontal"  name="newpollform" novalidate>
+                <div class="form-group">
+                    <label for="pollTitle" class="col-xs-2 create-form-label-text">Title</label>
+                    <div class="col-xs-9">
+                        <input type="text" class="form-control" id="pollTitle"
+                        placeholder="Title" ng-model="dataToSent.title" required>
+                    </div>
+                </div>
+                <div class="form-group animate-repeat" ng-repeat="option in options">
+                    <label for="option{{$index}}" class="col-xs-2 create-form-label-text">Option {{$index + 1}}</label>
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control" id="option{{$index}}"
+                        placeholder="Option {{$index + 1}}" ng-model="dataToSent.options[$index]" required>
+                    </div>
+                    <div class="col-xs-2 option-minus">
+                        <i class="fa fa-minus-circle fa-2x" aria-hidden="true" ng-click="delOpt($index)"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                <div class="col-xs-6">
+                    <button class="btn btn-success btn-block" ng-click="addOpt()">Add option</button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn btn-primary btn-block" 
+                    ng-class="{'disabled': newpollform.$invalid || dataToSent.options.length<2}" 
+                    ng-click="savePoll(newpollform)">Save</button>
+                </div>
+                </div>
+            </form>
+        </div>
+        <div class="poll-create-form text-center success-message-panel vote-animate" ng-if="successfullycreated==true">
+            <i class="fa fa-check-circle fa-3x" aria-hidden="true"></i>
+            <p><u><strong>Poll created!</strong></u></p>
+            <a ng-href="#/logged/newpoll" class="results-link" ng-click="reset()">Add poll</a>
+            <span>|</span>
+            <a ng-href="#/logged" class="results-link">Back to main</a>
+        </div>
+    </div>
+    <div class="panel-footer">
+         
+    </div>
+</div>

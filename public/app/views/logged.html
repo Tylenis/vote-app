@@ -1,0 +1,26 @@
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h1 class="text-center">POLLS</h1>
+        <a href="#logged/newpoll" class="new-poll-button">
+            <i class="fa fa-plus-circle fa-3x" aria-hidden="true"
+            uib-popover="Add poll" popover-placement="left" popover-trigger="'mouseenter'"></i>
+        </a>
+    </div>
+    <div class="panel-body">
+        <div ng-repeat="poll in pollsview.pollsToShow">
+            <div class="col-sm-3 poll">
+                <div class="text-center poll-inner">
+                    <p class="poll-name">{{poll.title | mylimitTo}}</p>
+                    <span class="poll-button"><a ng-href="#/logged/poll/{{poll._id}}/vote">Vote</a></span>
+                    <span class="splitter">|</span>
+                    <span class="poll-button"><a ng-href="#/logged/poll/{{poll._id}}/results">See results</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <ul uib-pager total-items="pollsview.totalItems" ng-model="pollsview.currentPage"
+        items-per-page="pollsview.perpage" ng-change="changepage(pollsview.currentPage)">
+        </ul>
+    </div>
+</div>

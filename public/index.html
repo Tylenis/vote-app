@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Voting App</title>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link href="/public/css/style.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="https://bootswatch.com/superhero/bootstrap.min.css" type="text/css" />
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-animate.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.0.0/ui-bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.0.0/ui-bootstrap-tpls.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.10/ngStorage.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-socialshare/2.2.4/angular-socialshare.min.js"></script>
+		
+		<script src="/public/app/app.js"></script>
+		
+		<script src="/public/app/services/paginationservice.js"></script>
+		<script src="/public/app/services/apiservice.js"></script>
+		
+		<script src="/public/app/controllers/controller.js"></script>
+	</head>
+	<body ng-app="voteApp">
+		<div ng-controller="mainCtrl">
+			<nav class="navbar navbar-default" ng-cloak>
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		    				<span class="sr-only">Toggle navigation</span>
+    						<span class="icon-bar"></span>
+    						<span class="icon-bar"></span>
+    						<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" ng-href="{{homeurl}}" ng-click="resetCurrent()">Voting App</a>
+					</div>
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav navbar-right" ng-hide="userstatus">
+    						<li ng-class="{'active':locationobj.currentlocation=='/sign-up'}">
+        						<a href="#sign-up" class="navbar-items" >
+            						<i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>
+             						Sign up
+        						</a>
+    						</li>
+    						<li ng-class="{'active':locationobj.currentlocation=='/log-in'}">
+        						<a href="#log-in" class="navbar-items">
+            						<i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>
+             						Log in
+        						</a>
+    						</li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right" ng-show="userstatus">
+                			<p class="navbar-text">
+                    			<i class="fa fa-user fa-lg" aria-hidden="true"></i>
+                     			Hi, {{welcomename}}
+                			</p>
+                			<li ng-class="{'active':locationobj.currentlocation=='/logged/mypolls'}">
+                    			<a href="#logged/mypolls" class="navbar-items">
+                        			<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
+                         			My polls
+                         			<span class="badge"><strong>{{pollsnumber}}</strong></span>
+                    			</a>
+                			</li>
+                			<li ng-class="{'active':locationobj.currentlocation=='/logged/settings'}">
+                    			<a href="#logged/settings" class="navbar-items">
+                        			<i class="fa fa-cog fa-lg" aria-hidden="true"></i>
+                         			Settings
+                    			</a>
+                			</li>
+                			<li>
+                    			<a href="" ng-click="logout()" class="navbar-items">
+                        			<i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
+                         			Logout
+                    			</a>
+                			</li>
+            			</ul>
+					</div>
+    			</div>
+			</nav>
+            <div ng-view class="view {{animate}}"></div>
+		</div>
+		<p class="text-center">Made by <a href="https://codepen.io/Tylenis/full/ONzmBX/" class="my-logo" target="_blank">Nerijus</a></p>
+	</body>
+</html>

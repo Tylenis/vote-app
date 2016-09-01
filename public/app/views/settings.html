@@ -1,0 +1,82 @@
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h1 class="text-center">Settings</h1>
+        <a href="#/logged" class="back-button">
+            <i class="fa fa-arrow-circle-left fa-3x" aria-hidden="true"
+            uib-popover="Back" popover-placement="right" popover-trigger="'mouseenter'"></i>
+        </a>
+    </div>
+    <div class="panel-body">
+        <div class="poll-create-form text-center success-message-panel vote-animate" ng-if="changed==true">
+            <i class="fa fa-check-circle fa-3x" aria-hidden="true"></i>
+            <p><u><strong>Password changed successfully!</strong></u></p>
+        </div>
+        <div class="poll-create-form" ng-if="changed==false">
+            <div uib-alert ng-class="'alert-danger wide text-center'" ng-show="showerror">
+                    <strong>{{errottxt}}</strong>
+            </div>
+            <form name="settings" novalidate>
+                <uib-tabset active="activeForm" justified="true">
+                    <uib-tab class="change-psw" index="0" heading="Change password">
+                        <legend class="text-center settings-legend">Change password</legend>
+                        <ng-form name="changepswform">
+                            <div class="form-group row" ng-class="{'has-success': changepswform.oldpsw.$valid&&!wrongpsw, 'has-error': wrongpsw}">
+                                <label for="oldpsw" class="col-xs-3 create-form-label-text">Old password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control" id="oldpsw" name="oldpsw"
+                                    placeholder="Old password" ng-model="data.old" required ng-minlength="6">
+                                </div>
+                            </div>
+                            <div class="form-group row"
+                            ng-class="{'has-success': changepswform.newpsw.$valid&&!nomatch, 'has-error': nomatch}">
+                                <label for="newpsw" class="col-xs-3 create-form-label-text">New password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control" id="newpsw" name="newpsw"
+                                    placeholder="New password" ng-model="data.new" required ng-minlength="6">
+                                </div>
+                            </div>
+                            <div class="form-group row" 
+                            ng-class="{'has-success': changepswform.newpswagain.$valid&&!nomatch, 'has-error': nomatch}">
+                                <label for="newpswagain" class="col-xs-3 create-form-label-text">New password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control" id="newpswagain" name="newpswagain"
+                                    placeholder="New password"  ng-model="data.newagain" required ng-minlength="6">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-primary btn-block" ng-class="{'disabled': changepswform.$invalid}"
+                                    ng-click="changePsw(settings.changepswform)">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-form>
+                    </uib-tab>
+                    <uib-tab index="1" heading="Delete account">
+                        <legend class="text-center settings-legend">Delete account</legend>
+                        <ng-form name="delaccountform">
+                            <div class="form-group row" ng-class="{'has-success': delaccountform.psw.$valid&&!wrongpsw, 'has-error': wrongpsw}">
+                                <label for="psw" class="col-xs-3 create-form-label-text">Password</label>
+                                <div class="col-xs-8">
+                                    <input type="password" class="form-control" id="psw" name="psw"
+                                    placeholder="Password" ng-model="data.psw" required ng-minlength="6">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-danger btn-block" ng-class="{'disabled': delaccountform.$invalid}"
+                                    ng-click="delAccount(settings.delaccountform)">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-form>
+                    </uib-tab>
+                </uib-tabset>
+            </form>
+        </div>
+    </div>
+    <div class="panel-footer">
+    </div>
+</div>

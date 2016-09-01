@@ -1,0 +1,46 @@
+<div class="well login-signup-form">
+    <div uib-alert ng-class="'alert-danger text-center'" close="closeAlert('signuperror')" ng-show="maindata.signuperror">
+        <strong>{{maindata.signuperror}}</strong>
+    </div>
+    <div uib-alert ng-class="'alert-danger text-center'" 
+    ng-show="signupform.username.$invalid&&signupform.username.$touched">
+        <strong>Username is required!</strong>
+    </div>
+    <div uib-alert ng-class="'alert-danger text-center'" 
+    ng-show="signupform.username.$touched&&signupform.username.$error.minlength">
+        <strong>Username must be at least 4 characters long!</strong>
+    </div>
+    <div uib-alert ng-class="'alert-danger text-center'" 
+    ng-show="signupform.password.$invalid&&signupform.password.$touched">
+        <strong>Password is required!</strong>
+    </div>
+    <div uib-alert ng-class="'alert-danger text-center'" 
+    ng-show="signupform.password.$touched&&signupform.password.$error.minlength">
+        <strong>Password must be at least 6 characters long!</strong>
+    </div>
+    <form class="form-horizontal" name="signupform" novalidate>
+        <fieldset>
+            <legend class="text-center">Sign up</legend>
+            <div class="form-group" ng-class="{'has-success': signupform.username.$valid}">
+                <label for="inputUsername" class="col-lg-2 control-label">Username</label>
+                <div class="col-lg-10">
+                    <input class="form-control" id="inputUsername" placeholder="Username"
+                    type="text" ng-model="username" required name="username" ng-minlength="4">
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-success': signupform.password.$valid}">
+                <label for="inputPassword" class="col-lg-2 control-label">Password</label>
+                <div class="col-lg-10">
+                    <input class="form-control" id="inputPassword" placeholder="Password"
+                    type="password" ng-model="password" required name="password" ng-minlength="6">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                    <button type="reset" class="btn btn-default">Cancel</button>
+                    <button class="btn btn-primary"  ng-class="{'disabled': signupform.$invalid}" ng-click="signup()">Submit</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>

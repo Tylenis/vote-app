@@ -1,0 +1,72 @@
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h1 class="text-center">VOTE</h1>
+        <a ng-href="{{backurl}}" class="back-button">
+            <i class="fa fa-arrow-circle-left fa-3x" aria-hidden="true"
+            uib-popover="Back" popover-placement="right" popover-trigger="'mouseenter'"></i>
+        </a>
+    </div>
+    <div class="panel-body">
+        <div class="poll-create-form" ng-if="votesuccess==false">
+            <div uib-alert ng-class="'alert-danger wide text-center'" ng-show="showerror">
+                    <strong>{{errottxt}}</strong>
+            </div>
+            <form class="form-horizontal"  name="voteradio" novalidate>
+                <legend class="text-center">{{poll.title}}</legend>
+                <div class="form-group vote-form-group">
+                    <div class="col-xs-9 col-xs-offset-2" >
+                        <div class="radio" ng-repeat="option in options">
+                            <label>
+                                <input type="radio" name="optionsRadios"
+                                 value="{{option}}" ng-model="choosen.option">
+                                <p class="vote-option-text">{{option}}</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form class="form-horizontal"  name="option" novalidate>    
+                <div class="form-group" ng-show="needoption">
+                    <label class="sr-only" for="newoption"></label>
+                    <div class="col-xs-10 col-xs-offset-1">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-minus-circle fa-2x new-option-delete" aria-hidden="true"
+                                uib-popover="Delete option." popover-placement="top" popover-trigger="'mouseenter'"
+                                ng-click="delOption()"></i>
+                            </div>
+                            <input type="text" class="form-control" id="newoption" 
+                            ng-model="inputobj.option" placeholder="Option" required>
+                            <div class="input-group-addon">
+                                <i class="fa fa-check-circle fa-2x new-option-submit" aria-hidden="true"
+                                uib-popover="Submit." popover-placement="top" popover-trigger="'mouseenter'"
+                                ng-click="submitOption(option)"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form class="form-horizontal"  name="buttons" novalidate>
+                <div class="form-group">
+                <div class="col-xs-6">
+                    <button class="btn btn-success btn-block" ng-class="{'disabled':needoption || optionsadded>0}" 
+                    ng-click="requestOption()">
+                        Add option
+                    </button>
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn btn-primary btn-block"  ng-class="{'disabled': voteradio.$pristine}"
+                    ng-click="vote()">Vote</button>
+                </div>
+                </div>
+            </form>
+        </div>
+        <div class="poll-create-form text-center success-message-panel vote-animate" ng-if="votesuccess==true">
+            <i class="fa fa-check-circle fa-3x" aria-hidden="true"></i>
+            <p><u><strong>Voted Successfully!</strong></u></p>
+            <a ng-href="#/logged/poll/{{poll._id}}/results" class="results-link">View results</a>
+        </div>
+    </div>
+    <div class="panel-footer">
+    </div>
+</div>
