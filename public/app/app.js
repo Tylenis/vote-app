@@ -12,9 +12,6 @@ angular.module("voteApp", ["ngRoute", "ui.bootstrap", "ngAnimate", "ngStorage", 
                     return config;
                 },
                 "responseError": function(response) {
-                    if(response.success === false || response.success === undefined) {
-                        $location.path("/log-in");
-                    }
                     return $q.reject(response);
                 }
             };
@@ -26,31 +23,55 @@ angular.module("voteApp", ["ngRoute", "ui.bootstrap", "ngAnimate", "ngStorage", 
             resolve: {
                 polls: ["Api", function(Api){
                     return Api.getResourceSimple("polls");
+                }],
+                authentication: ["Api", "$location", function(Api, $location){
+                    return Api.authentication($location.path());
                 }]
             }
             })
             .when("/poll/:pollId/vote", {
                 templateUrl: "public/app/views/vote.html",
-                controller: "voteCtrl"
+                controller: "voteCtrl",
+                resolve: {
+                    authentication: ["Api", "$location", function(Api, $location){
+                        return Api.authentication($location.path());
+                    }]
+                }
             })
             .when("/poll/:pollId/results", {
                 templateUrl: "public/app/views/pollresults.html",
-                controller: "resultsCtrl"
+                controller: "resultsCtrl",
+                resolve: {
+                    authentication: ["Api", "$location", function(Api, $location){
+                        return Api.authentication($location.path());
+                    }]
+                }
             })
             .when("/sign-up", {
                 templateUrl: "public/app/views/signup.html",
-                controller: "loginsignupCtrl"
+                controller: "loginsignupCtrl",
+                resolve: {
+                    authentication: ["Api", "$location", function(Api, $location){
+                        return Api.authentication($location.path());
+                    }]
+                }
             })
             .when("/log-in", {
                 templateUrl: "public/app/views/login.html",
-                controller: "loginsignupCtrl"
+                controller: "loginsignupCtrl",
+                resolve: {
+                    authentication: ["Api", "$location", function(Api, $location){
+                        return Api.authentication($location.path());
+                    }]
+                }
             })
             .when("/logged", {
                 templateUrl: "public/app/views/logged.html",
                 controller: "loggedCtrl",
                 resolve: {
-                    authentication: ["Api", function(Api){
-                        return Api.getResourceSimple("auth");
+                    authentication: ["Api", "$location",
+                    function(Api, $location){
+                        return Api.authentication($location.path());
                     }],
                     polls: ["Api", function(Api){
                         return Api.getResourceSimple("polls");
@@ -61,8 +82,8 @@ angular.module("voteApp", ["ngRoute", "ui.bootstrap", "ngAnimate", "ngStorage", 
                 templateUrl: "public/app/views/newpoll.html",
                 controller: "newpollCtrl",
                 resolve: {
-                    authentication: ["Api", function(Api){
-                        return Api.getResourceSimple("auth");
+                    authentication: ["Api", "$location", function(Api, $location){
+                        return Api.authentication($location.path());
                     }]
                 }
             })
@@ -70,8 +91,8 @@ angular.module("voteApp", ["ngRoute", "ui.bootstrap", "ngAnimate", "ngStorage", 
                 templateUrl: "public/app/views/votelog.html",
                 controller: "voteCtrl",
                 resolve: {
-                    authentication: ["Api", function(Api){
-                        return Api.getResourceSimple("auth");
+                    authentication: ["Api", "$location", function(Api, $location){
+                        return Api.authentication($location.path());
                     }]
                 }
             })
@@ -79,8 +100,8 @@ angular.module("voteApp", ["ngRoute", "ui.bootstrap", "ngAnimate", "ngStorage", 
                 templateUrl: "public/app/views/pollresults.html",
                 controller: "resultsCtrl",
                 resolve: {
-                    authentication: ["Api", function(Api){
-                        return Api.getResourceSimple("auth");
+                    authentication: ["Api", "$location", function(Api, $location){
+                        return Api.authentication($location.path());
                     }]
                 }
             })
@@ -88,8 +109,8 @@ angular.module("voteApp", ["ngRoute", "ui.bootstrap", "ngAnimate", "ngStorage", 
                 templateUrl: "public/app/views/mypolls.html",
                 controller: "mypollsCtrl",
                 resolve: {
-                    authentication: ["Api", function(Api){
-                        return Api.getResourceSimple("auth");
+                    authentication: ["Api", "$location", function(Api, $location){
+                        return Api.authentication($location.path());
                     }],
                     polls: ["Api", "$localStorage", function(Api, $localStorage){
                         return Api.getResourceWithParam("mypolls/", $localStorage.userId);
@@ -100,8 +121,8 @@ angular.module("voteApp", ["ngRoute", "ui.bootstrap", "ngAnimate", "ngStorage", 
                 templateUrl: "public/app/views/settings.html",
                 controller: "settingsCtrl",
                 resolve: {
-                    authentication: ["Api", function(Api){
-                        return Api.getResourceSimple("auth");
+                    authentication: ["Api", "$location", function(Api, $location){
+                        return Api.authentication($location.path());
                     }]
                 }
             })

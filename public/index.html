@@ -42,7 +42,7 @@
 						<a class="navbar-brand" ng-href="{{homeurl}}" ng-click="resetCurrent()">Voting App</a>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-						<ul class="nav navbar-nav navbar-right" ng-hide="userstatus">
+						<ul class="nav navbar-nav navbar-right" ng-hide="maindata.userstatus">
     						<li ng-class="{'active':locationobj.currentlocation=='/sign-up'}">
         						<a href="#sign-up" class="navbar-items" >
             						<i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>
@@ -56,16 +56,16 @@
         						</a>
     						</li>
 						</ul>
-						<ul class="nav navbar-nav navbar-right" ng-show="userstatus">
+						<ul class="nav navbar-nav navbar-right" ng-show="maindata.userstatus">
                 			<p class="navbar-text">
                     			<i class="fa fa-user fa-lg" aria-hidden="true"></i>
-                     			Hi, {{welcomename}}
+                     			Hi, {{maindata.welcomename}}
                 			</p>
                 			<li ng-class="{'active':locationobj.currentlocation=='/logged/mypolls'}">
                     			<a href="#logged/mypolls" class="navbar-items">
                         			<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
                          			My polls
-                         			<span class="badge"><strong>{{pollsnumber}}</strong></span>
+                         			<span class="badge"><strong>{{maindata.pollsnumber}}</strong></span>
                     			</a>
                 			</li>
                 			<li ng-class="{'active':locationobj.currentlocation=='/logged/settings'}">

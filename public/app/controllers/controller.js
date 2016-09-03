@@ -1,11 +1,7 @@
 angular.module("voteApp")
     .controller("mainCtrl", ["$scope", "Api", "$location", "$localStorage",
     function($scope, Api, $location, $localStorage){
-        
-        $scope.userstatus = $localStorage.user ? true:false;
-        $scope.homeurl = $localStorage.user ? "#/logged":"#/";
-        $scope.welcomename = $localStorage.user;
-        $scope.pollsnumber = $localStorage.pollsnumber;
+        $scope.homeurl = "#/";
         $scope.locationobj = {};
         $scope.locationobj.currentlocation = $location.url();
     
@@ -13,26 +9,27 @@ angular.module("voteApp")
             loginerror: undefined,
             signuperror: undefined,
             current: 1,
-            mypollscurrent: 1
+            mypollscurrent: 1,
+            userstatus: false
+            
         };
         
         $scope.closeAlert = function(errortype){
             $scope.maindata[errortype] = undefined;
             delete $scope.maindata.signupsuccess;
         };
-        
-        $scope.$on("newstatus", function(event, data){
-            $scope.userstatus = data.status;
-            $scope.welcomename = data.welcomename;
-            $scope.pollsnumber = data.pollsnumber;
+        $scope.$on("status", function(event, data){
+            $scope.maindata.userstatus = data.status;
+            $scope.homeurl = data.home;
+        });
+        $scope.$on("navbardata", function(event, data){
+            $scope.maindata.welcomename = data.welcomename;
+            $scope.maindata.pollsnumber = data.pollsnumber;
             delete $scope.maindata.loginerror;
             delete $scope.maindata.signuperror;
             delete $scope.maindata.signupsuccess;
-            $scope.homeurl = "#/logged";
         });
-        $scope.$on("pollnumberupdate", function(event, data){
-            $scope.pollsnumber = data.pollsnumber;
-        });
+        
         $scope.$on("current", function(event, data){
            $scope.maindata.current = data.current; 
         });
@@ -41,7 +38,7 @@ angular.module("voteApp")
         };
         $scope.logout = function(){
             Api.logout(function(){
-                $scope.userstatus = false;
+                $scope.maindata.userstatus = false;
                 $scope.homeurl = "#/";
                 $location.path("/");
             });
@@ -50,9 +47,10 @@ angular.module("voteApp")
     .controller("anonimCtrl", ["$scope", "$location", "$routeParams", "polls", "pagination", "$localStorage",
     function($scope, $location, $routeParams, polls, pagination, $localStorage){
         $scope.animate = "animate";
-        if($localStorage.token){
-            $location.path("/logged");
-        }
+        $scope.$emit("status", {
+            "status": false,
+            "home": "#/"
+        });
         $scope.locationobj.currentlocation = $location.url();
         $scope.current = $scope.maindata.current;
         var pollsarray = polls.data.data;
@@ -68,12 +66,13 @@ angular.module("voteApp")
            $scope.pollsview = pagination.showPolls(12, pollsarray, 1);
         });
     }])
-    .controller("loginsignupCtrl", ["$scope", "Api", "$localStorage", "$location",
-    function($scope, Api, $localStorage, $location){
+    .controller("loginsignupCtrl", ["$scope", "Api", "$localStorage", "$location", "authentication",
+    function($scope, Api, $localStorage, $location, authentication){
         $scope.animate = "animate";
-        if($localStorage.token){
-            $location.path("/logged");
-        }
+        $scope.$emit("status", {
+            "status": false,
+            "home": "#/"
+        });
          $scope.locationobj.currentlocation = $location.url();
          $scope.signup = function(){
             if($scope.signupform.$valid){
@@ -113,15 +112,16 @@ angular.module("voteApp")
     "authentication", "polls", "pagination",
     function($scope, $location, $localStorage, Api, authentication, polls, pagination){
         $scope.animate = "animate";
-        $localStorage.pollsnumber = authentication.data.pollqty;
-        $localStorage.user = authentication.data.username;
         $localStorage.userId = authentication.data.userId;
         $scope.current = $scope.maindata.current;
         $scope.locationobj.currentlocation = $location.url();
-        $scope.$emit("newstatus", {
-            "status": true,
+        $scope.$emit("navbardata", {
             "welcomename": authentication.data.username,
             "pollsnumber": authentication.data.pollqty
+        });
+        $scope.$emit("status", {
+            "status": true,
+            "home": "#/logged"
         });
         $scope.$on("resetcurrent", function(){
            $scope.pollsview = pagination.showPolls(12, pollsarray, 1);
@@ -137,14 +137,23 @@ angular.module("voteApp")
         };
         
     }])
-    .controller("newpollCtrl", ["$scope", "$location", "$localStorage", "Api",
-    function($scope, $location, $localStorage, Api){
+    .controller("newpollCtrl", ["$scope", "$location", "$localStorage", "Api", "authentication",
+    function($scope, $location, $localStorage, Api, authentication){
         $scope.animate = "animate";
+        $localStorage.userId = authentication.data.userId;
         $scope.options = ["option1", "option2", "option3"];
         $scope.successfullycreated = false;
         $scope.dataToSent = {};
         $scope.dataToSent.options = [];
         $scope.locationobj.currentlocation = $location.url();
+        $scope.$emit("status", {
+            "status": true,
+            "home": "#/logged"
+        });
+        $scope.$emit("navbardata", {
+            "welcomename": authentication.data.username,
+            "pollsnumber": authentication.data.pollqty
+        });
         $scope.addOpt = function(){
             var optionslength = $scope.options.length+1;
             $scope.options.push("option"+optionslength);
@@ -159,10 +168,6 @@ angular.module("voteApp")
             if(data.$valid){
                 Api.postResource("polls", $scope.dataToSent).then(function(res){
                     $scope.successfullycreated = res.data.success;
-                    $localStorage.pollsnumber++;
-                    $scope.$emit("pollnumberupdate", {
-                        "pollsnumber": $localStorage.pollsnumber
-                    });
                 });
             }
         };
@@ -173,17 +178,28 @@ angular.module("voteApp")
         };
         
     }])
-    .controller("resultsCtrl", ["$scope", "$routeParams", "Api", "$localStorage", "$location",
-    function($scope, $routeParams, Api, $localStorage, $location){
-        $scope.animate = "animate";
-        if($localStorage.token){
-            $location.path("/logged/poll/"+$routeParams.pollId+"/results");
-            $scope.welcomename = $localStorage.user;
-            $scope.pollsnumber = $localStorage.pollsnumber;
+    .controller("resultsCtrl", ["$scope", "$routeParams", "Api", "$localStorage",
+    "$location", "authentication",
+    function($scope, $routeParams, Api, $localStorage, $location, authentication){
+        if(authentication){
+            $localStorage.userId = authentication.data.userId;
+            $scope.$emit("status", {
+                "status": true,
+                "home": "#/logged"
+            });
+            $scope.$emit("navbardata", {
+                "welcomename": authentication.data.username,
+                "pollsnumber": authentication.data.pollqty
+            });
+        } else {
+            $scope.$emit("status", {
+                "status": false,
+                "home": "#/"
+            });
         }
+        $scope.animate = "animate";
         $scope.locationobj.currentlocation = $location.url();
-        $scope.logged = $localStorage.user ? true:false;
-        $scope.backurl = $scope.logged ? "#/logged":"#/";
+        $scope.backurl = authentication ? "#/logged":"#/";
         
         Api.getResourceWithParam("pollresults/", $routeParams.pollId).then(function(res){
             var width = angular.element(".panel-success").prop("offsetWidth");
@@ -213,18 +229,29 @@ angular.module("voteApp")
             };
         });
     }])
-    .controller("voteCtrl", ["$scope", "$routeParams", "Api", "$localStorage", "$location",
-    function($scope, $routeParams, Api, $localStorage, $location){
+    .controller("voteCtrl", ["$scope", "$routeParams", "Api", "$localStorage",
+    "$location", "authentication",
+    function($scope, $routeParams, Api, $localStorage, $location, authentication){
+        if(authentication){
+            $localStorage.userId = authentication.data.userId;
+            $scope.$emit("status", {
+                "status": true,
+                "home": "#/logged"
+            });
+            $scope.$emit("navbardata", {
+                "welcomename": authentication.data.username,
+                "pollsnumber": authentication.data.pollqty
+            });
+        } else {
+            $scope.$emit("status", {
+                "status": false,
+                "home": "#/"
+            });
+        }
         $scope.animate = "animate";
         $scope.votesuccess = false;
-        if($localStorage.token){
-            $location.path("/logged/poll/"+$routeParams.pollId+"/vote");
-            $scope.welcomename = $localStorage.user;
-            $scope.pollsnumber = $localStorage.pollsnumber;
-        }
         $scope.locationobj.currentlocation = $location.url();
-        $scope.logged = $localStorage.user ? true:false;
-        $scope.backurl = $scope.logged ? "#/logged":"#/";
+        $scope.backurl = authentication ? "#/logged":"#/";
         $scope.needoption = false;
         $scope.optionsadded = 0;
         $scope.showerror = false;
@@ -283,9 +310,11 @@ angular.module("voteApp")
         };
     }])
     .controller("mypollsCtrl", ["$scope", "Api", "pagination", "$location", 
-    "$localStorage", "$uibModal", "$routeParams", "polls",
-    function($scope, Api, pagination, $location, $localStorage, $uibModal, $routeParams, polls){
+    "$localStorage", "$uibModal", "$routeParams", "polls", "authentication",
+    function($scope, Api, pagination, $location, $localStorage, $uibModal, $routeParams, polls, authentication){
+        console.log(authentication);
         $scope.animate = "animate";
+        $localStorage.userId = authentication.data.userId;
         $scope.isCollapsed = true;
         $scope.mypollscurrent = $scope.maindata.mypollscurrent;
         $scope.temp = {};
@@ -297,7 +326,14 @@ angular.module("voteApp")
         $scope.nopolls = $scope.polls.length>0 ? false:true;
         $scope.pollsview = pagination.showPolls(3, $scope.polls, $scope.mypollscurrent);
         $scope.pollsview.changePage($scope.mypollscurrent);
-        
+        $scope.$emit("status", {
+            "status": true,
+            "home": "#/logged"
+        });
+        $scope.$emit("navbardata", {
+            "welcomename": authentication.data.username,
+            "pollsnumber": authentication.data.pollqty
+        });
         $scope.changepage = function(number){
             $scope.pollsview.changePage(number);
             $scope.mypollscurrent = $scope.pollsview.currentPage;
@@ -347,14 +383,14 @@ angular.module("voteApp")
                 var data = {};
                 data.pollId = pollid;
                 Api.postResource("mypolls/delete", data).then(function(res){
-                    Api.getResourceWithParam("mypolls/", $localStorage.userId).then(function(res){
+                    Api.getResourceWithParam("mypolls/", authentication.data.userId).then(function(res){
                         $scope.polls = res.data.data;
                         $scope.nopolls = $scope.polls.length>0 ? false:true;
-                        $localStorage.pollsnumber = $scope.polls.length;
                         $scope.pollsview = pagination.showPolls(3, $scope.polls, $scope.mypollscurrent);
                         $scope.pollsview.changePage($scope.mypollscurrent);
-                        $scope.$emit("pollnumberupdate", {
-                            "pollsnumber": $scope.polls.length
+                        $scope.$emit("navbardata", {
+                            "pollsnumber": $scope.polls.length,
+                            "welcomename": authentication.data.username
                         });
                     });
                 });
@@ -372,6 +408,14 @@ angular.module("voteApp")
         $scope.changed = false;
         $scope.wrongpsw = false;
         $scope.locationobj.currentlocation = $location.url();
+        $scope.$emit("status", {
+            "status": true,
+            "home": "#/logged"
+        });
+        $scope.$emit("navbardata", {
+            "welcomename": authentication.data.username,
+            "pollsnumber": authentication.data.pollqty
+        });
         $scope.changePsw = function(form){
             if(form.$valid){
                 if($scope.data.new !== $scope.data.newagain){
@@ -382,7 +426,7 @@ angular.module("voteApp")
                     $scope.showerror = false;
                     $scope.errottxt = "";
                     $scope.nomatch = false;
-                    $scope.data.username = $localStorage.user;
+                    $scope.data.username = authentication.data.username;
                     Api.postResource("change-password", $scope.data).then(function(res){
                         if(res.data.success == false){
                             $scope.showerror = true;
@@ -408,10 +452,9 @@ angular.module("voteApp")
                         $scope.errottxt = res.data.msg;
                     } else {
                         Api.logout(function(){
-                            $scope.$emit("newstatus", {
+                            $scope.$emit("status", {
                                 "status": false,
-                                "welcomename": undefined,
-                                "pollsnumber": undefined
+                                "home": "#/"
         });
                             $location.path("#/");
                         });
