@@ -129,7 +129,7 @@ angular.module("voteApp", ["ngRoute", "ui.bootstrap", "ngAnimate", "ngStorage", 
             .otherwise("/");
             
     }])
-    .constant("APIURL", "https://voting-app-tylenis.c9users.io/")
+    .constant("APIURL", "/")
     .filter("key", function(){
         return function(obj){
            return Object.keys(obj)[0]; 
